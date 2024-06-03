@@ -1,4 +1,6 @@
-﻿namespace PIM.Models
+﻿using System.Text.Json.Serialization;
+
+namespace PIM.Models
 {
     public class Carrinho
     {
@@ -6,7 +8,9 @@
         public DateTime dataPedido { get; set; }
         public decimal valorTotal { get; set; }
         public int statusPedido { get; set; }
-        public Cliente cliente { get; set; }
-        public List<Produto> produto { get; set; } = [];
+        public int clienteId { get; set; }
+        [JsonIgnore]
+        public virtual Cliente cliente { get; set; }
+        public virtual List<ItemCarrinho> produtos { get; set; } = [];
     }
 }

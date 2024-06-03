@@ -30,6 +30,7 @@ namespace PIM.Repository.Repository
             var obj = _context.carrinhos
                 .AsNoTracking()
                 .Where(x => x.id == id)
+                .Include(c => c.produtos)
                 .ToList();
 
             return obj.FirstOrDefault();
@@ -37,7 +38,7 @@ namespace PIM.Repository.Repository
 
         public List<Carrinho> ObterTodos()
         {
-            return [.. _context.carrinhos];
+            return [.. _context.carrinhos.Include(c => c.produtos)];
         }
     }
 }

@@ -15,6 +15,15 @@ builder.Services.AddSwaggerGen();
 builder.Services.AddDbContext<PIMDbContext>(opt => opt.UseNpgsql(builder.Configuration.GetConnectionString("PIMConnection")));
 
 builder.Services.AddScoped<IRepository<Carrinho>, CarrinhoRepository>();
+builder.Services.AddScoped<IRepository<ItemCarrinho>, ItemCarrinhoRepository>();
+
+builder.Services.AddCors(options =>
+{
+    options.AddPolicy("CorsPolicy",
+        builder => builder.AllowAnyOrigin()
+            .AllowAnyMethod()
+            .AllowAnyHeader());
+});
 
 var app = builder.Build();
 
@@ -26,6 +35,13 @@ if (app.Environment.IsDevelopment())
 }
 
 app.UseHttpsRedirection();
+
+app.UseCors(c =>
+{
+    c.AllowAnyHeader();
+    c.AllowAnyMethod();
+    c.AllowAnyOrigin();
+});
 
 app.UseAuthorization();
 

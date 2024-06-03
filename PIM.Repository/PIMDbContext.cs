@@ -1,5 +1,6 @@
 ﻿using Microsoft.EntityFrameworkCore;
 using PIM.Models;
+using System.Reflection;
 
 namespace PIM.Repository
 {
@@ -11,12 +12,11 @@ namespace PIM.Repository
         public DbSet<Categoria> categorias { get; set; }
         public DbSet<Produto> produtos { get; set; }
         public DbSet<Carrinho> carrinhos { get; set; }
+        public DbSet<ItemCarrinho> itensCarrinhos { get; set; }
 
         protected override void OnModelCreating(ModelBuilder modelBuilder)
         {
-            modelBuilder.Entity<Carrinho>()
-                .HasKey(c => new { c.id });
-
+            modelBuilder.ApplyConfigurationsFromAssembly(Assembly.GetExecutingAssembly());
             base.OnModelCreating(modelBuilder);
         }
     }

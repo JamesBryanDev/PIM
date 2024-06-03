@@ -30,7 +30,7 @@ namespace PIM.Repository.Migrations
 
                     NpgsqlPropertyBuilderExtensions.UseIdentityByDefaultColumn(b.Property<int>("id"));
 
-                    b.Property<int>("clienteid")
+                    b.Property<int>("clienteId")
                         .HasColumnType("integer");
 
                     b.Property<DateTime>("dataPedido")
@@ -44,7 +44,7 @@ namespace PIM.Repository.Migrations
 
                     b.HasKey("id");
 
-                    b.HasIndex("clienteid");
+                    b.HasIndex("clienteId");
 
                     b.ToTable("carrinhos");
                 });
@@ -83,22 +83,25 @@ namespace PIM.Repository.Migrations
 
                     b.Property<string>("email")
                         .IsRequired()
-                        .HasColumnType("text");
+                        .HasMaxLength(70)
+                        .HasColumnType("character varying(70)");
 
-                    b.Property<int>("enderecoid")
+                    b.Property<int>("enderecoId")
                         .HasColumnType("integer");
 
                     b.Property<string>("nome")
                         .IsRequired()
-                        .HasColumnType("text");
+                        .HasMaxLength(256)
+                        .HasColumnType("character varying(256)");
 
                     b.Property<string>("senha")
                         .IsRequired()
-                        .HasColumnType("text");
+                        .HasMaxLength(25)
+                        .HasColumnType("character varying(25)");
 
                     b.HasKey("id");
 
-                    b.HasIndex("enderecoid");
+                    b.HasIndex("enderecoId");
 
                     b.ToTable("clientes");
                 });
@@ -113,11 +116,13 @@ namespace PIM.Repository.Migrations
 
                     b.Property<string>("bairro")
                         .IsRequired()
-                        .HasColumnType("text");
+                        .HasMaxLength(100)
+                        .HasColumnType("character varying(100)");
 
                     b.Property<string>("cidade")
                         .IsRequired()
-                        .HasColumnType("text");
+                        .HasMaxLength(200)
+                        .HasColumnType("character varying(200)");
 
                     b.Property<string>("estado")
                         .IsRequired()
@@ -126,15 +131,38 @@ namespace PIM.Repository.Migrations
 
                     b.Property<string>("pais")
                         .IsRequired()
-                        .HasColumnType("text");
+                        .HasMaxLength(150)
+                        .HasColumnType("character varying(150)");
 
                     b.Property<string>("rua")
                         .IsRequired()
-                        .HasColumnType("text");
+                        .HasMaxLength(256)
+                        .HasColumnType("character varying(256)");
 
                     b.HasKey("id");
 
                     b.ToTable("enderecos");
+                });
+
+            modelBuilder.Entity("PIM.Models.ItemCarrinho", b =>
+                {
+                    b.Property<int>("carrinhoId")
+                        .HasColumnType("integer");
+
+                    b.Property<int>("produtoId")
+                        .HasColumnType("integer");
+
+                    b.Property<int>("quantidade")
+                        .HasColumnType("integer");
+
+                    b.Property<decimal>("total")
+                        .HasColumnType("numeric");
+
+                    b.HasKey("carrinhoId", "produtoId");
+
+                    b.HasIndex("produtoId");
+
+                    b.ToTable("itensCarrinhos");
                 });
 
             modelBuilder.Entity("PIM.Models.Produto", b =>
@@ -145,19 +173,18 @@ namespace PIM.Repository.Migrations
 
                     NpgsqlPropertyBuilderExtensions.UseIdentityByDefaultColumn(b.Property<int>("id"));
 
-                    b.Property<int?>("Carrinhoid")
-                        .HasColumnType("integer");
-
-                    b.Property<int>("categoriaid")
+                    b.Property<int>("categoriaId")
                         .HasColumnType("integer");
 
                     b.Property<string>("descricao")
                         .IsRequired()
-                        .HasColumnType("text");
+                        .HasMaxLength(45)
+                        .HasColumnType("character varying(45)");
 
                     b.Property<string>("imagem")
                         .IsRequired()
-                        .HasColumnType("text");
+                        .HasMaxLength(200)
+                        .HasColumnType("character varying(200)");
 
                     b.Property<decimal>("preco")
                         .HasColumnType("numeric");
@@ -166,16 +193,14 @@ namespace PIM.Repository.Migrations
                         .IsRequired()
                         .HasColumnType("text");
 
-                    b.Property<int>("vendedorid")
+                    b.Property<int>("vendedorId")
                         .HasColumnType("integer");
 
                     b.HasKey("id");
 
-                    b.HasIndex("Carrinhoid");
+                    b.HasIndex("categoriaId");
 
-                    b.HasIndex("categoriaid");
-
-                    b.HasIndex("vendedorid");
+                    b.HasIndex("vendedorId");
 
                     b.ToTable("produtos");
                 });
@@ -190,33 +215,38 @@ namespace PIM.Repository.Migrations
 
                     b.Property<string>("cnpj")
                         .IsRequired()
-                        .HasColumnType("text");
+                        .HasMaxLength(18)
+                        .HasColumnType("character varying(18)");
 
                     b.Property<decimal>("comissao")
                         .HasColumnType("numeric");
 
                     b.Property<string>("email")
                         .IsRequired()
-                        .HasColumnType("text");
+                        .HasMaxLength(70)
+                        .HasColumnType("character varying(70)");
 
-                    b.Property<int>("enderecoid")
+                    b.Property<int>("enderecoId")
                         .HasColumnType("integer");
 
                     b.Property<string>("nomeFantasia")
                         .IsRequired()
-                        .HasColumnType("text");
+                        .HasMaxLength(70)
+                        .HasColumnType("character varying(70)");
 
                     b.Property<string>("razaoSocial")
                         .IsRequired()
-                        .HasColumnType("text");
+                        .HasMaxLength(100)
+                        .HasColumnType("character varying(100)");
 
                     b.Property<string>("senha")
                         .IsRequired()
-                        .HasColumnType("text");
+                        .HasMaxLength(25)
+                        .HasColumnType("character varying(25)");
 
                     b.HasKey("id");
 
-                    b.HasIndex("enderecoid");
+                    b.HasIndex("enderecoId");
 
                     b.ToTable("vendedores");
                 });
@@ -224,8 +254,8 @@ namespace PIM.Repository.Migrations
             modelBuilder.Entity("PIM.Models.Carrinho", b =>
                 {
                     b.HasOne("PIM.Models.Cliente", "cliente")
-                        .WithMany()
-                        .HasForeignKey("clienteid")
+                        .WithMany("carrinhos")
+                        .HasForeignKey("clienteId")
                         .OnDelete(DeleteBehavior.Cascade)
                         .IsRequired();
 
@@ -236,28 +266,43 @@ namespace PIM.Repository.Migrations
                 {
                     b.HasOne("PIM.Models.Endereco", "endereco")
                         .WithMany()
-                        .HasForeignKey("enderecoid")
+                        .HasForeignKey("enderecoId")
                         .OnDelete(DeleteBehavior.Cascade)
                         .IsRequired();
 
                     b.Navigation("endereco");
                 });
 
+            modelBuilder.Entity("PIM.Models.ItemCarrinho", b =>
+                {
+                    b.HasOne("PIM.Models.Carrinho", "carrinho")
+                        .WithMany("produtos")
+                        .HasForeignKey("carrinhoId")
+                        .OnDelete(DeleteBehavior.Cascade)
+                        .IsRequired();
+
+                    b.HasOne("PIM.Models.Produto", "produto")
+                        .WithMany("carrinho")
+                        .HasForeignKey("produtoId")
+                        .OnDelete(DeleteBehavior.Cascade)
+                        .IsRequired();
+
+                    b.Navigation("carrinho");
+
+                    b.Navigation("produto");
+                });
+
             modelBuilder.Entity("PIM.Models.Produto", b =>
                 {
-                    b.HasOne("PIM.Models.Carrinho", null)
-                        .WithMany("produto")
-                        .HasForeignKey("Carrinhoid");
-
                     b.HasOne("PIM.Models.Categoria", "categoria")
-                        .WithMany()
-                        .HasForeignKey("categoriaid")
+                        .WithMany("produtos")
+                        .HasForeignKey("categoriaId")
                         .OnDelete(DeleteBehavior.Cascade)
                         .IsRequired();
 
                     b.HasOne("PIM.Models.Vendedor", "vendedor")
-                        .WithMany()
-                        .HasForeignKey("vendedorid")
+                        .WithMany("produtos")
+                        .HasForeignKey("vendedorId")
                         .OnDelete(DeleteBehavior.Cascade)
                         .IsRequired();
 
@@ -270,7 +315,7 @@ namespace PIM.Repository.Migrations
                 {
                     b.HasOne("PIM.Models.Endereco", "endereco")
                         .WithMany()
-                        .HasForeignKey("enderecoid")
+                        .HasForeignKey("enderecoId")
                         .OnDelete(DeleteBehavior.Cascade)
                         .IsRequired();
 
@@ -279,7 +324,27 @@ namespace PIM.Repository.Migrations
 
             modelBuilder.Entity("PIM.Models.Carrinho", b =>
                 {
-                    b.Navigation("produto");
+                    b.Navigation("produtos");
+                });
+
+            modelBuilder.Entity("PIM.Models.Categoria", b =>
+                {
+                    b.Navigation("produtos");
+                });
+
+            modelBuilder.Entity("PIM.Models.Cliente", b =>
+                {
+                    b.Navigation("carrinhos");
+                });
+
+            modelBuilder.Entity("PIM.Models.Produto", b =>
+                {
+                    b.Navigation("carrinho");
+                });
+
+            modelBuilder.Entity("PIM.Models.Vendedor", b =>
+                {
+                    b.Navigation("produtos");
                 });
 #pragma warning restore 612, 618
         }
